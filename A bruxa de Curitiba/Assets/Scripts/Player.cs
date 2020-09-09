@@ -4,117 +4,167 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private CharacterController controle;
-
     public float velocidade;
-    public float alturaPulo;
-    private float velocidadePulo;
-    public float gravidade;
-    public float velocidadeHorizontal;
+    public float laneVelocidade;
+    public float puloDistancia;
+    public float puloAltura;
+    public float abaixarDistancia;
 
-    public float rayRaio;
-    public LayerMask layer;
-    public LayerMask moedaLayer;
-
-    private bool estaMovendoDireita;
-    private bool estaMovendoEsquerda;
-
-    public Animator animacao;
-    public bool estaMorto = false;
-
-    private GameControle gc;
+    private Animator anim;
+    private Rigidbody rb;
+    private BoxCollider boxCollider;
+    private int atualLane = 1;
+    private Vector3 verticalAlvoPosicao;
+    private bool estaPulando = false;
+    private float puloInicio;
+    private bool estaAbaixando = false;
+    private float abaixarInicio;
+    private Vector3 boxColiderTamanho;
+    private bool estaTocando = false;
+    private Vector2 iniciandoToque;
 
     void Start()
     {
-        controle = GetComponent<CharacterController>();
-        gc = FindObjectOfType<GameControle>();
+        rb = GetComponent<Rigidbody>();
+        anim = GetComponentInChildren<Animator>();
+        boxCollider = GetComponent<BoxCollider>();
+        boxColiderTamanho = boxCollider.size;
+        anim.Play("runStart");
     }
 
     void Update()
     {
-        Vector3 direcao = Vector3.forward * velocidade;
-
-        if(controle.isGrounded)
+        //Inputs para computador
+        if(Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            if(Input.GetKeyDown(KeyCode.Space))
+            MudarLane(-1);
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            MudarLane(1);
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            Pular();
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            Abaixar();
+        }
+
+        //Inputs para celular
+        if(Input.touchCount == 1)
+        {
+            if(estaTocando)
             {
-                velocidadePulo = alturaPulo;
+                Vector2 diff = Input.GetTouch(0).position - iniciandoToque;
+                diff = new Vector2(diff.x / Screen.width, diff.y / Screen.width);
+                if(diff.magnitude > 0.01f)
+                {
+                    if(Mathf.Abs(diff.y) > Mathf.Abs(diff.x))
+                    {
+                        if (diff.y < 0)
+                            Abaixar();
+                        else
+                            Pular();
+                    }
+                    else
+                    {
+                        if (diff.x < 0)
+                            MudarLane(-1);
+                        else
+                            MudarLane(1);
+                    }
+
+                    estaTocando = false;
+                }
             }
 
-            if(Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 3f && !estaMovendoDireita)
+            if (Input.GetTouch(0).phase == TouchPhase.Began)
             {
-                estaMovendoDireita = true;
-                StartCoroutine(DireitaMover());
+                iniciandoToque = Input.GetTouch(0).position;
+                estaTocando = true;
             }
-
-            if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > 3f && !estaMovendoEsquerda)
+            else if (Input.GetTouch(0).phase == TouchPhase.Ended)
             {
-                estaMovendoEsquerda = true;
-                StartCoroutine(EsquerdaMover());
+                estaTocando = false;
+            }
+        }
+
+
+        //Pular e abaixar
+        if (estaPulando)
+        {
+            float razao = (transform.position.z - puloInicio) / puloDistancia;
+            if(razao >= 1)
+            {
+                estaPulando = false;
+                anim.SetBool("Jumping", false);
+            }
+            else
+            {
+                verticalAlvoPosicao.y = Mathf.Sin(razao * Mathf.PI) * puloAltura;
             }
         }
         else
         {
-            velocidadePulo -= gravidade;
+            verticalAlvoPosicao.y = Mathf.MoveTowards(verticalAlvoPosicao.y, 0, 5 * Time.deltaTime);
         }
 
-        direcao.y = velocidadePulo;
+        if(estaAbaixando)
+        {
+            float razao = (transform.position.z - abaixarInicio) / abaixarDistancia;
+            if(razao >=1f)
+            {
+                estaAbaixando = false;
+                anim.SetBool("Sliding", false);
+                boxCollider.size = boxColiderTamanho;
+            }
+        }
 
-        controle.Move(direcao * Time.deltaTime);
 
-        EmColisao();
+        Vector3 alvoPosicao = new Vector3(verticalAlvoPosicao.x, verticalAlvoPosicao.y, transform.position.z);
+        transform.position = Vector3.MoveTowards(transform.position, alvoPosicao, laneVelocidade * Time.deltaTime);
     }
 
-    IEnumerator EsquerdaMover()
+    private void FixedUpdate()
     {
-        for(float  i = 0; i < 10; i += 0.1f)
-        {
-            controle.Move(Vector3.left * Time.deltaTime * velocidadeHorizontal);
-            yield return null;
-        }
-
-        estaMovendoEsquerda = false;
+        rb.velocity = Vector3.forward * velocidade;
     }
 
-    IEnumerator DireitaMover()
+    void MudarLane(int direcao)
     {
-        for (float i = 0; i < 10; i += 0.1f)
-        {
-            controle.Move(Vector3.right * Time.deltaTime * velocidadeHorizontal);
-            yield return null;
-        }
+        int alvoLane = atualLane + direcao;
 
-        estaMovendoDireita = false;
+        if (alvoLane < 0 || alvoLane > 2)
+            return;
+
+        atualLane = alvoLane;
+        verticalAlvoPosicao = new Vector3((atualLane - 1), 0, 0);
     }
 
-    void EmColisao()
+    void Pular()
     {
-        RaycastHit hit;
-
-        if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, rayRaio, layer) && !estaMorto)
+        if(!estaPulando)
         {
-            animacao.SetTrigger("morte");
-            velocidade = 0;
-            alturaPulo = 0;
-            velocidadeHorizontal = 0;
-
-            //O Invoke faz chamar um método após um determinado tempo, para chamar, é necessário que esteja no mesmo Script
-            Invoke("FimDeJogo", 3f);
-
-            estaMorto = true;
-        }
-
-        RaycastHit moedaHit;
-
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward + new Vector3(0,1f,0)), out moedaHit, rayRaio, moedaLayer))
-        {
-            gc.AddMoedas();
-            Destroy(moedaHit.transform.gameObject);
+            puloInicio = transform.position.z;
+            anim.SetFloat("JumpSpeed", velocidade / puloDistancia);
+            anim.SetBool("Jumping", true);
+            estaPulando = true;
         }
     }
 
-    void FimDeJogo()
+    void Abaixar()
     {
-        gc.MostrarFimDeJogo();
+        if(!estaPulando && !estaAbaixando)
+        {
+            abaixarInicio = transform.position.z;
+            anim.SetFloat("JumpSpeed", velocidade / abaixarDistancia);
+            anim.SetBool("Sliding", true);
+            Vector3 novoTamanho = boxCollider.size;
+            novoTamanho.y = novoTamanho.y / 2;
+            boxCollider.size = novoTamanho;
+            estaAbaixando = true;
+        }
     }
 }
