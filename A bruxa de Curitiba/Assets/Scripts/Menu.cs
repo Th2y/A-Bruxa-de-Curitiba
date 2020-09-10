@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
+
+
     void Start()
     {
         
@@ -15,8 +16,8 @@ public class Menu : MonoBehaviour
         
     }
 
-    void Jogar()
+    public void IniciarCorrida()
     {
-        SceneManager.LoadScene("Jogo");
+        GameManager.gm.IniciarCorrida();
     }
 }

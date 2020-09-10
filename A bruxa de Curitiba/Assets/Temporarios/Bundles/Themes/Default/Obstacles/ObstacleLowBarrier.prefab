@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 65000011028955966}
   m_Layer: 9
   m_Name: ObstacleLowBarrier
-  m_TagString: Untagged
+  m_TagString: Obstaculos
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,7 +121,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000013842435444}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.01, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 297.23633}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4000014029247798}
@@ -139,5 +139,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 5.0343904, y: 0.61367464, z: 0.29541254}
-  m_Center: {x: -0.02892065, y: 0.29719234, z: -0.004761219}
+  m_Size: {x: 3.2768073, y: 0.02599448, z: 0.29541254}
+  m_Center: {x: 0.01907751, y: 0.5910324, z: -0.004761219}

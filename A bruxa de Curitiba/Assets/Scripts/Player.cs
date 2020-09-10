@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
     public float puloDistancia;
     public float puloAltura;
     public float abaixarDistancia;
+    public float velocidadeMin = 10f;
+    public float velocidadeMax = 30f;
 
     private Animator anim;
     private Rigidbody rb;
@@ -22,6 +24,9 @@ public class Player : MonoBehaviour
     private Vector3 boxColiderTamanho;
     private bool estaTocando = false;
     private Vector2 iniciandoToque;
+    private UIManager uIManager;
+    private int moedas;
+    private float pontos;
 
     void Start()
     {
@@ -30,10 +35,15 @@ public class Player : MonoBehaviour
         boxCollider = GetComponent<BoxCollider>();
         boxColiderTamanho = boxCollider.size;
         anim.Play("runStart");
+        velocidade = velocidadeMin;
+        uIManager = FindObjectOfType<UIManager>();
     }
 
     void Update()
     {
+        pontos += Time.deltaTime * velocidade;
+        uIManager.AtualizarPontos((int)pontos);
+
         //Inputs para computador
         if(Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -166,5 +176,35 @@ public class Player : MonoBehaviour
             boxCollider.size = novoTamanho;
             estaAbaixando = true;
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Moeda"))
+        {
+            moedas++;
+            uIManager.AtualizarMoedas(moedas);
+            other.transform.parent.gameObject.SetActive(false);
+        }
+
+        if(other.CompareTag("Obstaculos"))
+        {
+            velocidade = 0;
+            anim.SetBool("Dead", true);
+            uIManager.gameOver.SetActive(true);
+            Invoke("ChamarMenu", 5f);
+        }
+    }  
+
+    void ChamarMenu()
+    {
+        GameManager.gm.IrMenu();
+    }
+
+    public void AumentarVelocidade()
+    {
+        velocidade *= 1.2f;
+        if (velocidade >= velocidadeMax)
+            velocidade = velocidadeMax;
     }
 }
