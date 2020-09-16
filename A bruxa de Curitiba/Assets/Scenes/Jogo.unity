@@ -2299,6 +2299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOver: {fileID: 1529463287}
   moedaTexto: {fileID: 1349024623}
+  pontosTexto: {fileID: 613671185}
 --- !u!1001 &1285124153
 PrefabInstance:
   m_ObjectHideFlags: 0
