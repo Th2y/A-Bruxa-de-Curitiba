@@ -26,7 +26,9 @@ public class Player : MonoBehaviour
     private Vector2 iniciandoToque;
     private UIManager uIManager;
     private int moedas;
+    private int moedasTotais;
     private float pontos;
+    private float maiorPontuacao;
 
     void Start()
     {
@@ -37,11 +39,17 @@ public class Player : MonoBehaviour
         anim.Play("runStart");
         velocidade = velocidadeMin;
         uIManager = FindObjectOfType<UIManager>();
+
+        if (PlayerPrefs.GetInt("MoedasGanhas") <= 0)
+            PlayerPrefs.SetInt("MoedasGanhas", 0);
+        if (PlayerPrefs.GetFloat("Pontuacao") <= 0)
+            PlayerPrefs.SetFloat("Pontuacao", 0);
     }
 
     void Update()
     {
         pontos += Time.deltaTime * velocidade;
+        maiorPontuacao = pontos;
         uIManager.AtualizarPontos((int)pontos);
 
         //Inputs para computador
@@ -193,12 +201,18 @@ public class Player : MonoBehaviour
             anim.SetBool("Dead", true);
             uIManager.gameOver.SetActive(true);
             Invoke("ChamarMenu", 5f);
+
+            moedasTotais = PlayerPrefs.GetInt("MoedasGanhas") + moedas;
+            PlayerPrefs.SetInt("MoedasGanhas", moedasTotais);
+
+            if (maiorPontuacao > PlayerPrefs.GetFloat("Pontuacao"))
+                PlayerPrefs.SetFloat("Pontuacao", maiorPontuacao);
         }
     }  
 
     void ChamarMenu()
     {
-        GameManager.gm.IrMenu();
+        GameManager.instancia.IrMenu();
     }
 
     public void AumentarVelocidade()

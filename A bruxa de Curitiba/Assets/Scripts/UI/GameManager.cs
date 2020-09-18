@@ -5,20 +5,20 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager gm;
+    public static GameManager instancia;
 
     private void Awake()
     {
-        if (gm == null)
-            gm = this;
-        else if (gm != this)
+        if (instancia == null)
+            instancia = this;
+        else if (instancia != this)
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        
+        instancia = this;
     }
 
     void Update()
