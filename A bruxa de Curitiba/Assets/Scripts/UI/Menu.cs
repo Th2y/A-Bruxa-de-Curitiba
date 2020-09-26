@@ -20,9 +20,14 @@ public class Menu : MonoBehaviour
         
     }
 
-    public void IniciarCorrida()
+    public void IniciarHistoria()
     {
-        GameManager.instancia.IniciarCorrida();
+        GameManager.instancia.IrFase1();
+    }
+
+    public void IniciarInfinito()
+    {
+        GameManager.instancia.IrFase3();
     }
 
     public void PegarPontuacao()

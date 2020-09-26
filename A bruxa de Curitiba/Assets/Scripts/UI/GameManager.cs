@@ -21,14 +21,19 @@ public class GameManager : MonoBehaviour
         instancia = this;
     }
 
-    void Update()
+    public void IrFase1()
     {
-        
+        SceneManager.LoadScene("Fase1");
     }
 
-    public void IniciarCorrida()
+    public void IrFase2()
     {
-        SceneManager.LoadScene("Jogo");
+        SceneManager.LoadScene("Fase2");
+    }
+
+    public void IrFase3()
+    {
+        SceneManager.LoadScene("Fase3");
     }
 
     public void IrMenu()

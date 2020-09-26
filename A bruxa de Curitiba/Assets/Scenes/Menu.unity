@@ -204,7 +204,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1610249870}
-        m_MethodName: IniciarCorrida
+        m_MethodName: IniciarHistoria
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -208,6 +208,15 @@ public class Player : MonoBehaviour
             if (maiorPontuacao > PlayerPrefs.GetFloat("Pontuacao"))
                 PlayerPrefs.SetFloat("Pontuacao", maiorPontuacao);
         }
+
+        if(other.CompareTag("Finish"))
+        {
+            Debug.Log("tocou");
+            if(PlayerPrefs.GetInt("MoedasGanhas") >= 50)
+                RepetirOuNao.instancia.RepetirNao();
+            else
+                RepetirOuNao.instancia.RepetirSim();
+        }
     }  
 
     void ChamarMenu()

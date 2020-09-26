@@ -2871,7 +2871,7 @@ MonoBehaviour:
   - {fileID: 1000010256476064, guid: f0070c0f7d7cdcb4eb7176be4a87caa9, type: 3}
   - {fileID: 1000013234899880, guid: d9056217b765e1b4893238b9e7ebddbc, type: 3}
   numeroDeObstaculos: {x: 15, y: 20}
-  moeda: {fileID: 1676306319008012659, guid: c65e4b2108397244588ec5c8be27dfe7, type: 3}
+  moeda: {fileID: 1676306319008012659, guid: d200dfff18d0fab4d852c8201721a618, type: 3}
   numeroDeMoedas: {x: 50, y: 100}
   novosObstaculos: []
   novasMoedas: []
@@ -3149,7 +3149,7 @@ MonoBehaviour:
   - {fileID: 1000010256476064, guid: f0070c0f7d7cdcb4eb7176be4a87caa9, type: 3}
   - {fileID: 1000013234899880, guid: d9056217b765e1b4893238b9e7ebddbc, type: 3}
   numeroDeObstaculos: {x: 15, y: 20}
-  moeda: {fileID: 1676306319008012659, guid: c65e4b2108397244588ec5c8be27dfe7, type: 3}
+  moeda: {fileID: 1676306319008012659, guid: d200dfff18d0fab4d852c8201721a618, type: 3}
   numeroDeMoedas: {x: 50, y: 100}
   novosObstaculos: []
   novasMoedas: []
