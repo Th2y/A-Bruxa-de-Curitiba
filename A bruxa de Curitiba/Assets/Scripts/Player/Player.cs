@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -44,6 +43,11 @@ public class Player : MonoBehaviour
             PlayerPrefs.SetInt("MoedasGanhas", 0);
         if (PlayerPrefs.GetFloat("Pontuacao") <= 0)
             PlayerPrefs.SetFloat("Pontuacao", 0);
+
+        if (SceneManager.GetActiveScene().name == "Fase1")
+            PlayerPrefs.SetInt("MoedasCorridaAtual", 0);
+        else
+            uIManager.AtualizarMoedas(PlayerPrefs.GetInt("MoedasCorridaAtual"));
     }
 
     void Update()
@@ -190,9 +194,10 @@ public class Player : MonoBehaviour
     {
         if(other.CompareTag("Moeda"))
         {
-            moedas++;
+            moedas = PlayerPrefs.GetInt("MoedasCorridaAtual") + 1;
             uIManager.AtualizarMoedas(moedas);
             other.transform.parent.gameObject.SetActive(false);
+            PlayerPrefs.SetInt("MoedasCorridaAtual", moedas);
         }
 
         if(other.CompareTag("Obstaculos"))
@@ -212,10 +217,21 @@ public class Player : MonoBehaviour
         if(other.CompareTag("Finish"))
         {
             Debug.Log("tocou");
-            if(PlayerPrefs.GetInt("MoedasGanhas") >= 50)
-                RepetirOuNao.instancia.RepetirNao();
-            else
-                RepetirOuNao.instancia.RepetirSim();
+
+            if (SceneManager.GetActiveScene().name == "Fase1")
+            {
+                if (PlayerPrefs.GetInt("MoedasCorridaAtual") >= 50)
+                    RepetirOuNao.instancia.RepetirNao();
+                else
+                    RepetirOuNao.instancia.RepetirSim();
+            }
+            else if (SceneManager.GetActiveScene().name == "Fase2")
+            {
+                if (PlayerPrefs.GetInt("MoedasCorridaAtual") >= 120)
+                    RepetirOuNao.instancia.RepetirNao();
+                else
+                    RepetirOuNao.instancia.RepetirSim();
+            }
         }
     }  
 

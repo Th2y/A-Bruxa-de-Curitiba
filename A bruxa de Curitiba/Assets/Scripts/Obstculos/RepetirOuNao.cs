@@ -12,6 +12,7 @@ public class RepetirOuNao : MonoBehaviour
     public GameObject pausarNoFim;
 
     public static RepetirOuNao instancia;
+    public GameObject player;
 
     private void Start()
     {
@@ -25,6 +26,8 @@ public class RepetirOuNao : MonoBehaviour
             moedas[i].transform.position = new Vector3(moedas[i].transform.position.x, moedas[i].transform.position.y, moedas[i].transform.position.z + 254*num);
         }
         fim.transform.position = new Vector3(fim.transform.position.x, fim.transform.position.y, fim.transform.position.z + 254*num);
+
+        player.GetComponent<Player>().AumentarVelocidade();
     }
 
     public void RepetirNao()
@@ -36,6 +39,9 @@ public class RepetirOuNao : MonoBehaviour
 
     void PassarFase()
     {
-        GameManager.instancia.IrFase2();
+        if(SceneManager.GetActiveScene().name == "Fase1")
+            GameManager.instancia.IrFase2();
+        else if(SceneManager.GetActiveScene().name == "Fase2")
+            GameManager.instancia.IrFase3();
     }
 }

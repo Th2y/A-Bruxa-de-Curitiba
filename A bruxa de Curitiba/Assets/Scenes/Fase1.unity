@@ -808,7 +808,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &131356930 stripped
 GameObject:
@@ -2593,6 +2593,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92f6aa9e9d73c92489f1b03694136e5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tempo: 3
+  minhasPosicoes:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 1.5, z: 0}
 --- !u!1001 &407201326
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5824,7 +5828,7 @@ Transform:
   - {fileID: 1497755765}
   - {fileID: 398405359}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
@@ -10142,7 +10146,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1581716177}
-  - component: {fileID: 1581716179}
   - component: {fileID: 1581716178}
   m_Layer: 0
   m_Name: Tracks
@@ -10198,30 +10201,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 8, y: 10, z: 1}
   m_Center: {x: 0, y: 4.76, z: 300}
---- !u!114 &1581716179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1581716176}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18da4760c22ae1c4c819ea6fbf503cff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  obstaculos:
-  - {fileID: 1000011638144408, guid: 22facfbe232a90b45b681c638f2e490d, type: 3}
-  - {fileID: 1000011769374998, guid: b19a0bd8ede69fe4683dff84150a047b, type: 3}
-  - {fileID: 1000013842435444, guid: d68ac797bf384f84bbca159dc2a6e4d7, type: 3}
-  - {fileID: 1000010455400752, guid: 82eb370d70e50344cb6eeb919a1429b8, type: 3}
-  - {fileID: 1000010256476064, guid: f0070c0f7d7cdcb4eb7176be4a87caa9, type: 3}
-  - {fileID: 1000013234899880, guid: d9056217b765e1b4893238b9e7ebddbc, type: 3}
-  numeroDeObstaculos: {x: 15, y: 20}
-  moeda: {fileID: 1676306319008012659, guid: c65e4b2108397244588ec5c8be27dfe7, type: 3}
-  numeroDeMoedas: {x: 50, y: 100}
-  novosObstaculos: []
-  novasMoedas: []
 --- !u!1 &1617968368 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1676306319008012659, guid: c65e4b2108397244588ec5c8be27dfe7,
@@ -11012,6 +10991,7 @@ MonoBehaviour:
   - {fileID: 1263119851}
   fim: {fileID: 117032847}
   pausarNoFim: {fileID: 2087937648}
+  player: {fileID: 2087937648}
 --- !u!1001 &1746161412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11267,7 +11247,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1767221221}
-  - component: {fileID: 1767221223}
   - component: {fileID: 1767221222}
   m_Layer: 0
   m_Name: Tracks (1)
@@ -11323,30 +11302,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 8, y: 10, z: 1}
   m_Center: {x: 0, y: 4.76, z: 300}
---- !u!114 &1767221223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1767221220}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18da4760c22ae1c4c819ea6fbf503cff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  obstaculos:
-  - {fileID: 1000011638144408, guid: 22facfbe232a90b45b681c638f2e490d, type: 3}
-  - {fileID: 1000011769374998, guid: b19a0bd8ede69fe4683dff84150a047b, type: 3}
-  - {fileID: 1000013842435444, guid: d68ac797bf384f84bbca159dc2a6e4d7, type: 3}
-  - {fileID: 1000010455400752, guid: 82eb370d70e50344cb6eeb919a1429b8, type: 3}
-  - {fileID: 1000010256476064, guid: f0070c0f7d7cdcb4eb7176be4a87caa9, type: 3}
-  - {fileID: 1000013234899880, guid: d9056217b765e1b4893238b9e7ebddbc, type: 3}
-  numeroDeObstaculos: {x: 15, y: 20}
-  moeda: {fileID: 1676306319008012659, guid: c65e4b2108397244588ec5c8be27dfe7, type: 3}
-  numeroDeMoedas: {x: 50, y: 100}
-  novosObstaculos: []
-  novasMoedas: []
 --- !u!1 &1777066387 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1676306319008012659, guid: c65e4b2108397244588ec5c8be27dfe7,
@@ -11746,7 +11701,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1819925881 stripped
 GameObject:

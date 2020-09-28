@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
 
     public void AtualizarMoedas(int moedas)
     {
-        moedaTexto.text = moedas.ToString();
+        moedaTexto.text = PlayerPrefs.GetInt("MoedasCorridaAtual").ToString();
     }
 
     public void AtualizarPontos(int pontos)
