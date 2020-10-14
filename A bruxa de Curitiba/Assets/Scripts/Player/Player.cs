@@ -237,7 +237,7 @@ public class Player : MonoBehaviour
 
     void ChamarMenu()
     {
-        GameManager.instancia.IrMenu();
+        SceneManager.LoadScene("Menu");
     }
 
     public void AumentarVelocidade()

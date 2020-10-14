@@ -39,9 +39,9 @@ public class RepetirOuNao : MonoBehaviour
 
     void PassarFase()
     {
-        if(SceneManager.GetActiveScene().name == "Fase1")
-            GameManager.instancia.IrFase2();
-        else if(SceneManager.GetActiveScene().name == "Fase2")
-            GameManager.instancia.IrFase3();
+        if (SceneManager.GetActiveScene().name == "Fase1")
+            SceneManager.LoadScene("Fase2");
+        else if (SceneManager.GetActiveScene().name == "Fase2")
+            SceneManager.LoadScene("Fase3");
     }
 }

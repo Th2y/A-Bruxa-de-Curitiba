@@ -8,6 +8,8 @@ TagManager:
   - ObstaculosGrandes
   - ObstaculosPequenos
   - Moeda
+  - Musica
+  - Efeito
   layers:
   - Default
   - TransparentFX
