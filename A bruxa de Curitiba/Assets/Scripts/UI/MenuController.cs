@@ -4,14 +4,14 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    public bool isPaused;
-    public float transitionDelay;
-    public Animator fadeAnimator;
+    [SerializeField] private bool isPaused;
+    [SerializeField] private float transitionDelay;
+    [SerializeField] private Animator fadeAnimator;
 
     public void LoadScene(string scene)
     {
-        //SceneManager.LoadScene(scene);
-        StartCoroutine(LoadLevel(scene));
+        if(scene == Constants.MenuScene) SceneManager.LoadScene(scene);
+        else StartCoroutine(LoadLevel(scene));
     }
 
     public void PauseGame()
