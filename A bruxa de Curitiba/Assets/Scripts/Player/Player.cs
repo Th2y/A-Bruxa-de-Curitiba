@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
         if (SceneManager.GetActiveScene().name == Constants.Level1Scene)
             PlayerPrefs.SetInt(Constants.CoinsCurrentRunPref, 0);
         else
-            uIManager.UpdateCoins(PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref));
+            uIManager.UpdateCoins();
     }
 
     private void Update()
@@ -160,9 +160,9 @@ public class Player : MonoBehaviour
         if (other.CompareTag(Constants.CoinTag))
         {
             coins = PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref) + 1;
-            uIManager.UpdateCoins(coins);
             other.transform.parent.gameObject.SetActive(false);
             PlayerPrefs.SetInt(Constants.CoinsCurrentRunPref, coins);
+            uIManager.UpdateCoins();
         }
         else if (other.CompareTag(Constants.ObstaclesTag))
         {

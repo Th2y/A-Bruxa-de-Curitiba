@@ -1,26 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public GameObject gameOver;
-    public Text moedaTexto;
-    public Text pontosTexto;
 
-    void Start()
+    [SerializeField] private TextMeshProUGUI coinsText;
+    [SerializeField] private TextMeshProUGUI pointsText;
+
+    private void Start()
     {
         gameOver.SetActive(false);
     }
 
-    public void UpdateCoins(int moedas)
+    public void UpdateCoins()
     {
-        moedaTexto.text = PlayerPrefs.GetInt("MoedasCorridaAtual").ToString();
+        coinsText.text = PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref).ToString();
     }
 
     public void UpdatePoints(int pontos)
     {
-        pontosTexto.text = pontos.ToString();
+        pointsText.text = pontos.ToString();
     }
 }

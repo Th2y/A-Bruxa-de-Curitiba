@@ -9872,8 +9872,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOver: {fileID: 1529463287}
-  moedaTexto: {fileID: 0}
-  pontosTexto: {fileID: 0}
+  coinsText: {fileID: 1349024623}
+  pointsText: {fileID: 1837417285}
 --- !u!1001 &1227824206
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14290,6 +14290,12 @@ Transform:
   m_Father: {fileID: 961407186}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1759526059 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95452715991280686, guid: 95d2ac30741c7b24bb3362f902133c24,
+    type: 3}
+  m_PrefabInstance: {fileID: 1999679598}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1767221220
 GameObject:
   m_ObjectHideFlags: 0
@@ -17117,10 +17123,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f11f941d487704c90b4d29e1035b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
-  rb: {fileID: 0}
-  boxCollider: {fileID: 0}
-  uIManager: {fileID: 0}
+  anim: {fileID: 1759526059}
+  rb: {fileID: 2087937650}
+  boxCollider: {fileID: 2087937651}
+  uIManager: {fileID: 1225115062}
   velocity: 10
   laneVelocity: 10
   minVelocity: 10

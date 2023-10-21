@@ -22,7 +22,7 @@ public class Constants : MonoBehaviour
     public static readonly string CoinTag = "Moeda";
     public static readonly string ObstaclesTag = "Obstaculos";
     public static readonly string FinishTag = "Finish";
-    public static readonly string EffectsTag = "Efeitos";
-    public static readonly string MusicTag = "Musicas";
+    public static readonly string EffectsTag = "Efeito";
+    public static readonly string MusicTag = "Musica";
     #endregion
 }
