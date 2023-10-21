@@ -14,12 +14,12 @@ public class UIManager : MonoBehaviour
         gameOver.SetActive(false);
     }
 
-    public void AtualizarMoedas(int moedas)
+    public void UpdateCoins(int moedas)
     {
         moedaTexto.text = PlayerPrefs.GetInt("MoedasCorridaAtual").ToString();
     }
 
-    public void AtualizarPontos(int pontos)
+    public void UpdatePoints(int pontos)
     {
         pontosTexto.text = pontos.ToString();
     }

@@ -40,8 +40,8 @@ public class Track : MonoBehaviour
             float posZMax = (297f / novosObstaculos.Count) + (297f / novosObstaculos.Count) * i + 1;
             novosObstaculos[i].transform.localPosition = new Vector3(0, 0, Random.Range(posZMin, posZMax));
             novosObstaculos[i].SetActive(true);
-            if (novosObstaculos[i].GetComponent<MudarLane>() != null)
-                novosObstaculos[i].GetComponent<MudarLane>().PosicionarLane();
+            if (novosObstaculos[i].GetComponent<ChangeLane>() != null)
+                novosObstaculos[i].GetComponent<ChangeLane>().PositionLane();
         }
     }
 
@@ -55,7 +55,7 @@ public class Track : MonoBehaviour
             float randomZPos = Random.Range(minZPos, maxZPos);
             novasMoedas[i].transform.localPosition = new Vector3(transform.position.x, transform.position.y, randomZPos);
             novasMoedas[i].SetActive(true);
-            novasMoedas[i].GetComponent<MudarLane>().PosicionarLane();
+            novasMoedas[i].GetComponent<ChangeLane>().PositionLane();
             minZPos = randomZPos + 1;
         }
     }
@@ -64,7 +64,7 @@ public class Track : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            other.GetComponent<Player>().AumentarVelocidade();
+            other.GetComponent<Player>().IncreaseSpeed();
             transform.position = new Vector3(0, 0, transform.position.z + 297 * 2);
             PosicionarObstaculos();
             PosicionarMoedas();

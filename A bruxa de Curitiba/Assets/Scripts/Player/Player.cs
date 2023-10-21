@@ -3,247 +3,245 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    public float velocidade;
-    public float laneVelocidade;
-    public float puloDistancia;
-    public float puloAltura;
-    public float abaixarDistancia;
-    public float velocidadeMin = 10f;
-    public float velocidadeMax = 30f;
+    [Header("References")]
+    [SerializeField] private Animator anim;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private BoxCollider boxCollider;
+    [SerializeField] private UIManager uIManager;
 
-    private Animator anim;
-    private Rigidbody rb;
-    private BoxCollider boxCollider;
-    private int atualLane = 1;
-    private Vector3 verticalAlvoPosicao;
-    private bool estaPulando = false;
-    private float puloInicio;
-    private bool estaAbaixando = false;
-    private float abaixarInicio;
-    private Vector3 boxColiderTamanho;
-    private bool estaTocando = false;
-    private Vector2 iniciandoToque;
-    private UIManager uIManager;
-    private int moedas;
-    private int moedasTotais;
-    private float pontos;
-    private float maiorPontuacao;
+    [Header("Properties")]
+    [SerializeField] private float velocity = 10f;
+    [SerializeField] private float laneVelocity = 10f;
+    [SerializeField] private float minVelocity = 10f;
+    [SerializeField] private float maxVelocity = 30f;
+    [SerializeField] private float jumpDistance = 7.5f;
+    [SerializeField] private float jumpHeight = 2f;
+    [SerializeField] private float lowerDistance = 10f;
 
-    void Start()
+    private int actualLane = 1;
+    private Vector3 verticalTargetPosition;
+    private bool isJumping = false;
+    private float jumpStart;
+    private bool isBowing = false;
+    private float bowStart;
+    private Vector3 boxColliderSize;
+    private bool touching = false;
+    private Vector2 startingTouch;
+    private int coins;
+    private int totalCoins;
+    private float points;
+    private float bestScore;
+
+    private static readonly string RunStartAnim = "runStart";
+    private static readonly string JumpingAnim = "Jumping";
+    private static readonly string JumpSpeedAnim = "JumpSpeed";
+    private static readonly string SlidingAnim = "Sliding";
+    private static readonly string DeadAnim = "Dead";
+
+    private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        anim = GetComponentInChildren<Animator>();
-        boxCollider = GetComponent<BoxCollider>();
-        boxColiderTamanho = boxCollider.size;
-        anim.Play("runStart");
-        velocidade = velocidadeMin;
-        uIManager = FindObjectOfType<UIManager>();
+        boxColliderSize = boxCollider.size;
+        anim.Play(RunStartAnim);
+        velocity = minVelocity;
 
-        if (PlayerPrefs.GetInt("MoedasGanhas") <= 0)
-            PlayerPrefs.SetInt("MoedasGanhas", 0);
-        if (PlayerPrefs.GetFloat("Pontuacao") <= 0)
-            PlayerPrefs.SetFloat("Pontuacao", 0);
+        if (PlayerPrefs.GetInt(Constants.EarnedCoinsPref) <= 0)
+            PlayerPrefs.SetInt(Constants.EarnedCoinsPref, 0);
+        if (PlayerPrefs.GetFloat(Constants.ScorePref) <= 0)
+            PlayerPrefs.SetFloat(Constants.ScorePref, 0);
 
-        if (SceneManager.GetActiveScene().name == "Fase1")
-            PlayerPrefs.SetInt("MoedasCorridaAtual", 0);
+        if (SceneManager.GetActiveScene().name == Constants.Level1Scene)
+            PlayerPrefs.SetInt(Constants.CoinsCurrentRunPref, 0);
         else
-            uIManager.AtualizarMoedas(PlayerPrefs.GetInt("MoedasCorridaAtual"));
+            uIManager.UpdateCoins(PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref));
     }
 
-    void Update()
+    private void Update()
     {
-        pontos += Time.deltaTime * velocidade;
-        maiorPontuacao = pontos;
-        uIManager.AtualizarPontos((int)pontos);
+        points += Time.deltaTime * velocity;
+        bestScore = points;
+        uIManager.UpdatePoints((int)points);
 
         //Inputs para computador
         if(Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            MudarLane(-1);
+            ChangeLane(-1);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            MudarLane(1);
+            ChangeLane(1);
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            Pular();
+            Jump();
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            Abaixar();
+            GetDown();
         }
 
-        //Inputs para celular
         if(Input.touchCount == 1)
         {
-            if(estaTocando)
+            if(touching)
             {
-                Vector2 diff = Input.GetTouch(0).position - iniciandoToque;
+                Vector2 diff = Input.GetTouch(0).position - startingTouch;
                 diff = new Vector2(diff.x / Screen.width, diff.y / Screen.width);
                 if(diff.magnitude > 0.01f)
                 {
                     if(Mathf.Abs(diff.y) > Mathf.Abs(diff.x))
                     {
                         if (diff.y < 0)
-                            Abaixar();
+                            GetDown();
                         else
-                            Pular();
+                            Jump();
                     }
                     else
                     {
                         if (diff.x < 0)
-                            MudarLane(-1);
+                            ChangeLane(-1);
                         else
-                            MudarLane(1);
+                            ChangeLane(1);
                     }
 
-                    estaTocando = false;
+                    touching = false;
                 }
             }
 
             if (Input.GetTouch(0).phase == TouchPhase.Began)
             {
-                iniciandoToque = Input.GetTouch(0).position;
-                estaTocando = true;
+                startingTouch = Input.GetTouch(0).position;
+                touching = true;
             }
             else if (Input.GetTouch(0).phase == TouchPhase.Ended)
             {
-                estaTocando = false;
+                touching = false;
             }
         }
 
-
-        //Pular e abaixar
-        if (estaPulando)
+        if (isJumping)
         {
-            float razao = (transform.position.z - puloInicio) / puloDistancia;
+            float razao = (transform.position.z - jumpStart) / jumpDistance;
             if(razao >= 1)
             {
-                estaPulando = false;
-                anim.SetBool("Jumping", false);
+                isJumping = false;
+                anim.SetBool(JumpingAnim, false);
             }
             else
             {
-                verticalAlvoPosicao.y = Mathf.Sin(razao * Mathf.PI) * puloAltura;
+                verticalTargetPosition.y = Mathf.Sin(razao * Mathf.PI) * jumpHeight;
             }
         }
         else
         {
-            verticalAlvoPosicao.y = Mathf.MoveTowards(verticalAlvoPosicao.y, 0, 5 * Time.deltaTime);
+            verticalTargetPosition.y = Mathf.MoveTowards(verticalTargetPosition.y, 0, 5 * Time.deltaTime);
         }
 
-        if(estaAbaixando)
+        if(isBowing)
         {
-            float razao = (transform.position.z - abaixarInicio) / abaixarDistancia;
+            float razao = (transform.position.z - bowStart) / lowerDistance;
             if(razao >=1f)
             {
-                estaAbaixando = false;
-                anim.SetBool("Sliding", false);
-                boxCollider.size = boxColiderTamanho;
+                isBowing = false;
+                anim.SetBool(SlidingAnim, false);
+                boxCollider.size = boxColliderSize;
             }
         }
 
-
-        Vector3 alvoPosicao = new Vector3(verticalAlvoPosicao.x, verticalAlvoPosicao.y, transform.position.z);
-        transform.position = Vector3.MoveTowards(transform.position, alvoPosicao, laneVelocidade * Time.deltaTime);
+        Vector3 alvoPosicao = new Vector3(verticalTargetPosition.x, verticalTargetPosition.y, transform.position.z);
+        transform.position = Vector3.MoveTowards(transform.position, alvoPosicao, laneVelocity * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
-        rb.velocity = Vector3.forward * velocidade;
-    }
-
-    void MudarLane(int direcao)
-    {
-        int alvoLane = atualLane + direcao;
-
-        if (alvoLane < 0 || alvoLane > 2)
-            return;
-
-        atualLane = alvoLane;
-        verticalAlvoPosicao = new Vector3((atualLane - 1), 0, 0);
-    }
-
-    void Pular()
-    {
-        if(!estaPulando)
-        {
-            puloInicio = transform.position.z;
-            anim.SetFloat("JumpSpeed", velocidade / puloDistancia);
-            anim.SetBool("Jumping", true);
-            estaPulando = true;
-        }
-    }
-
-    void Abaixar()
-    {
-        if(!estaPulando && !estaAbaixando)
-        {
-            abaixarInicio = transform.position.z;
-            anim.SetFloat("JumpSpeed", velocidade / abaixarDistancia);
-            anim.SetBool("Sliding", true);
-            Vector3 novoTamanho = boxCollider.size;
-            novoTamanho.y = novoTamanho.y / 2;
-            boxCollider.size = novoTamanho;
-            estaAbaixando = true;
-        }
+        rb.velocity = Vector3.forward * velocity;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Moeda"))
+        if (other.CompareTag(Constants.CoinTag))
         {
-            moedas = PlayerPrefs.GetInt("MoedasCorridaAtual") + 1;
-            uIManager.AtualizarMoedas(moedas);
+            coins = PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref) + 1;
+            uIManager.UpdateCoins(coins);
             other.transform.parent.gameObject.SetActive(false);
-            PlayerPrefs.SetInt("MoedasCorridaAtual", moedas);
+            PlayerPrefs.SetInt(Constants.CoinsCurrentRunPref, coins);
         }
-
-        if(other.CompareTag("Obstaculos"))
+        else if (other.CompareTag(Constants.ObstaclesTag))
         {
-            velocidade = 0;
-            anim.SetBool("Dead", true);
+            velocity = 0;
+            anim.SetBool(DeadAnim, true);
             uIManager.gameOver.SetActive(true);
-            Invoke("ChamarMenu", 5f);
+            Invoke(nameof(CallMenu), 5f);
 
-            moedasTotais = PlayerPrefs.GetInt("MoedasGanhas") + moedas;
-            PlayerPrefs.SetInt("MoedasGanhas", moedasTotais);
+            totalCoins = PlayerPrefs.GetInt(Constants.EarnedCoinsPref) + coins;
+            PlayerPrefs.SetInt(Constants.EarnedCoinsPref, totalCoins);
 
-            if (maiorPontuacao > PlayerPrefs.GetFloat("Pontuacao"))
-                PlayerPrefs.SetFloat("Pontuacao", maiorPontuacao);
+            if (bestScore > PlayerPrefs.GetFloat(Constants.ScorePref))
+                PlayerPrefs.SetFloat(Constants.ScorePref, bestScore);
         }
-
-        if(other.CompareTag("Finish"))
+        else if (other.CompareTag(Constants.FinishTag))
         {
-            Debug.Log("tocou");
-
-            if (SceneManager.GetActiveScene().name == "Fase1")
+            switch (SceneManager.GetActiveScene().name)
             {
-                if (PlayerPrefs.GetInt("MoedasCorridaAtual") >= 50)
-                    RepetirOuNao.instancia.RepetirNao();
-                else
-                    RepetirOuNao.instancia.RepetirSim();
-            }
-            else if (SceneManager.GetActiveScene().name == "Fase2")
-            {
-                if (PlayerPrefs.GetInt("MoedasCorridaAtual") >= 120)
-                    RepetirOuNao.instancia.RepetirNao();
-                else
-                    RepetirOuNao.instancia.RepetirSim();
+                case "Level1":
+                    if (PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref) >= 50)
+                        RepeatOrNo.Instance.RepeatNo();
+                    else
+                        RepeatOrNo.Instance.RepeatYes();
+                    break;
+                case "Level2":
+                    if (PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref) >= 120)
+                        RepeatOrNo.Instance.RepeatNo();
+                    else
+                        RepeatOrNo.Instance.RepeatYes();
+                    break;
             }
         }
-    }  
-
-    void ChamarMenu()
-    {
-        SceneManager.LoadScene("Menu");
     }
 
-    public void AumentarVelocidade()
+    private void ChangeLane(int direction)
     {
-        velocidade *= 1.2f;
-        if (velocidade >= velocidadeMax)
-            velocidade = velocidadeMax;
+        int targetLane = actualLane + direction;
+
+        if (targetLane < 0 || targetLane > 2)
+            return;
+
+        actualLane = targetLane;
+        verticalTargetPosition = new Vector3(actualLane - 1, 0, 0);
+    }
+
+    private void Jump()
+    {
+        if(!isJumping)
+        {
+            jumpStart = transform.position.z;
+            anim.SetFloat(JumpSpeedAnim, velocity / jumpDistance);
+            anim.SetBool(JumpingAnim, true);
+            isJumping = true;
+        }
+    }
+
+    private void GetDown()
+    {
+        if(!isJumping && !isBowing)
+        {
+            bowStart = transform.position.z;
+            anim.SetFloat(JumpSpeedAnim, velocity / lowerDistance);
+            anim.SetBool(SlidingAnim, true);
+            Vector3 newSize = boxCollider.size;
+            newSize.y /= 2;
+            boxCollider.size = newSize;
+            isBowing = true;
+        }
+    }
+
+    private void CallMenu()
+    {
+        SceneManager.LoadScene(Constants.MenuScene);
+    }
+
+    public void IncreaseSpeed()
+    {
+        velocity *= 1.2f;
+        if (velocity >= maxVelocity)
+            velocity = maxVelocity;
     }
 }

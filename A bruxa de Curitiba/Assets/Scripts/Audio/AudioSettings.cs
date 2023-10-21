@@ -2,22 +2,17 @@
 
 public class AudioSettings : MonoBehaviour
 {
-    private     static readonly string      BackgroundPref = "BackgroundPref";
-    private     static readonly string      SoundEffectPref = "SoundEffectPref";
+    [SerializeField] private AudioSource backgroundClip;
+    [SerializeField] private AudioSource[] soundEffectsClip;
 
-    private     float                       backgroundSoundValue, soundEffectValue;
+    private float backgroundSoundValue;
+    private float soundEffectValue;
 
-    public      AudioSource                 backgroundClip;
-    public      AudioSource[]               soundEffectsClip;
-
-    private MenuController menucontroller;
     private bool isPlaying;
 
-    // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
         ContinueSettings();
-        menucontroller = FindObjectOfType(typeof(MenuController)) as MenuController;
     }
 
     public void PauseMusic()
@@ -35,8 +30,8 @@ public class AudioSettings : MonoBehaviour
 
     private void ContinueSettings()
     {
-        backgroundSoundValue = PlayerPrefs.GetFloat(BackgroundPref);
-        soundEffectValue = PlayerPrefs.GetFloat(SoundEffectPref);
+        backgroundSoundValue = PlayerPrefs.GetFloat(Constants.MusicPref);
+        soundEffectValue = PlayerPrefs.GetFloat(Constants.EffectsPref);
 
         backgroundClip.volume = backgroundSoundValue;
 
