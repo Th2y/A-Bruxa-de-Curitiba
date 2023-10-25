@@ -165,7 +165,7 @@ TextureImporter:
       213: 21300106
     second: StartButtonPressed
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -182,9 +182,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -194,8 +197,8 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
     filterMode: 1
-    aniso: -1
-    mipBias: -100
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -216,10 +219,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -231,6 +239,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
@@ -243,6 +252,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
@@ -255,6 +265,33 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
@@ -1299,9 +1336,58 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      ActivePowerUpBackground: 21300058
+      ArrowButtonDefault: 21300078
+      ArrowButtonGrey: 21300082
+      ArrowButtonShadow: 21300080
+      Background: 21300040
+      CatIcone: 21300054
+      CloseButton: 21300024
+      DayPreview: 21300036
+      FancyHat: 21300012
+      FishboneIcone: 21300062
+      GameUIBackground: 21300064
+      HandleSlider: 21300072
+      InvicibilityPowerup: 21300032
+      Leaderboard: 21300042
+      LeaderboardIcon: 21300008
+      LifeHeart: 21300050
+      LifePowerup: 21300034
+      MagnetPowerup: 21300028
+      Missions: 21300046
+      MissionsIcon: 21300002
+      MultiplierPowerup: 21300030
+      NightPreview: 21300038
+      NoItem: 21300070
+      PartyHat: 21300014
+      PauseButton: 21300048
+      PauseMenu: 21300066
+      PauseResume: 21300068
+      PremiumIcone: 21300060
+      RacoonIcone: 21300056
+      SettingIcone: 21300076
+      Settings: 21300006
+      Shop: 21300044
+      SliderBG: 21300074
+      StartButton: 21300000
+      StartButtonPressed: 21300106
+      StoreIcon: 21300004
+      TimeBar: 21300052
+      UIBorderFilled01: 21300084
+      UIBorderFilledOrange: 21300102
+      UIBorderFilledRed: 21300086
+      UIBorderLightGrey: 21300104
+      UIButton: 21300098
+      UIButtonBG: 21300096
+      UIButtonNoShadow: 21300094
+      UIButtonOrange: 21300092
+      UIButtonOrangeNoShadow: 21300100
+      UISliderBG: 21300088
+      UISliderFill: 21300090
+      WorkerHat: 21300026
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
