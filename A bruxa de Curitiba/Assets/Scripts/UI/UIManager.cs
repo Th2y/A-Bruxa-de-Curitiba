@@ -13,9 +13,9 @@ public class UIManager : MonoBehaviour
         gameOver.SetActive(false);
     }
 
-    public void UpdateCoins()
+    public void UpdateCoins(int coins)
     {
-        coinsText.text = PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref).ToString();
+        coinsText.text = coins.ToString();
     }
 
     public void UpdatePoints(int pontos)

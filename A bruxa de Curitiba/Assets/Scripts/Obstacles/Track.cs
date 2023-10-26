@@ -1,73 +1,78 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Track : MonoBehaviour
 {
-    public GameObject[] obstaculos;
-    public Vector2 numeroDeObstaculos;
-    public GameObject moeda;
-    public Vector2 numeroDeMoedas;
+    [Header("References")]
+    [SerializeField] private PlayerSO playerSO;
+    [SerializeField] private GameObject[] obstacles;
+    [SerializeField] private GameObject coinPrefab;
 
-    public List<GameObject> novosObstaculos;
-    public List<GameObject> novasMoedas;
+    private bool isInfinityMode;
+    private DifficultySO difficulty;
 
-    void Start()
+    private readonly List<GameObject> _newCoins = new();
+
+    public void Start()
     {
-        int novoNumeroDeObstaculos = (int)Random.Range(numeroDeObstaculos.x, numeroDeObstaculos.y);
-        int novoNumeroDeMoedas = (int)Random.Range(numeroDeMoedas.x, numeroDeMoedas.y);
+        isInfinityMode = ActualMode.Instance.IsInfinityMode;
 
-        for (int i = 0; i < novoNumeroDeObstaculos; i++)
+        difficulty = playerSO.DifficultiesDict[playerSO.ActualDifficulty];
+
+        int newNumberOfCoins = (int)Random.Range(difficulty.NumberOfCoinsToShow.x, difficulty.NumberOfCoinsToShow.y);
+
+        for (int i = 0; i < newNumberOfCoins; i++)
         {
-            novosObstaculos.Add(Instantiate(obstaculos[Random.Range(0, obstaculos.Length)], transform));
-            novosObstaculos[i].SetActive(false);
-        }
-        for (int i = 0; i < novoNumeroDeMoedas; i++)
-        {
-            novasMoedas.Add(Instantiate(moeda, transform));
-            novasMoedas[i].SetActive(false);
+            _newCoins.Add(Instantiate(coinPrefab, transform));
+            _newCoins[i].SetActive(false);
         }
 
-        PosicionarObstaculos();
-        PosicionarMoedas();
+        PlaceObstacles();
+        PlaceCoins();
     }
 
-    void PosicionarObstaculos()
+    private void PlaceObstacles()
     {
-        for (int i = 0; i < novosObstaculos.Count; i++)
+        float percent = playerSO.DifficultiesDict[playerSO.ActualDifficulty].PercentOfObstaclesToShow;
+
+        foreach (GameObject obstacle in obstacles)
         {
-            float posZMin = (297f / novosObstaculos.Count) + (297f / novosObstaculos.Count) * i;
-            float posZMax = (297f / novosObstaculos.Count) + (297f / novosObstaculos.Count) * i + 1;
-            novosObstaculos[i].transform.localPosition = new Vector3(0, 0, Random.Range(posZMin, posZMax));
-            novosObstaculos[i].SetActive(true);
-            if (novosObstaculos[i].GetComponent<ChangeLane>() != null)
-                novosObstaculos[i].GetComponent<ChangeLane>().PositionLane();
+            obstacle.SetActive(Random.Range(0f, 1f) <= percent);
         }
     }
 
-    void PosicionarMoedas()
+    private void PlaceCoins()
     {
         float minZPos = 10f;
 
-        for (int i = 0; i < novasMoedas.Count; i++)
+        for (int i = 0; i < _newCoins.Count; i++)
         {
-            float maxZPos = minZPos + 5f;
-            float randomZPos = Random.Range(minZPos, maxZPos);
-            novasMoedas[i].transform.localPosition = new Vector3(transform.position.x, transform.position.y, randomZPos);
-            novasMoedas[i].SetActive(true);
-            novasMoedas[i].GetComponent<ChangeLane>().PositionLane();
+            float randomZPos = Random.Range(minZPos, minZPos + 5f);
             minZPos = randomZPos + 1;
+
+            _newCoins[i].SetActive(true);
+            _newCoins[i].transform.localPosition = new Vector3(transform.position.x, _newCoins[i].transform.position.y, randomZPos);
+            _newCoins[i].GetComponent<ChangeLane>().PositionLane();
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag(Constants.PlayerTag))
         {
-            other.GetComponent<Player>().IncreaseSpeed();
-            transform.position = new Vector3(0, 0, transform.position.z + 297 * 2);
-            PosicionarObstaculos();
-            PosicionarMoedas();
+            Player player = other.GetComponent<Player>();
+
+            if (isInfinityMode || player.Coins < difficulty.NumberOfCoinsToWin)
+            {
+                player.IncreaseSpeed();
+                transform.position = new Vector3(0, 0, transform.position.z + 297 * 2);
+                PlaceObstacles();
+                PlaceCoins();
+            }
+            else 
+            {
+                RepeatOrNo.Instance.RepeatNo();
+            }
         }
     }
 }

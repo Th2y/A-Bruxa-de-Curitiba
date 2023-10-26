@@ -8,9 +8,15 @@ public class MenuController : MonoBehaviour
     [SerializeField] private float transitionDelay;
     [SerializeField] private Animator fadeAnimator;
 
+    public void ChooseLevelModeAndPlay(bool isInfinityMode)
+    {
+        ActualMode.Instance.IsInfinityMode = isInfinityMode;
+        StartCoroutine(LoadLevel("Level"));
+    }
+
     public void LoadScene(string scene)
     {
-        if(scene == Constants.MenuScene) SceneManager.LoadScene(scene);
+        if(scene == "MainMenu") SceneManager.LoadScene(scene);
         else StartCoroutine(LoadLevel(scene));
     }
 

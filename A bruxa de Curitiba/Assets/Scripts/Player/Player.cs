@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] private PlayerSO playerSO;
     [SerializeField] private Animator anim;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private BoxCollider boxCollider;
@@ -18,6 +19,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float lowerDistance = 10f;
 
+    public int Coins { get; private set; }
+
     private int actualLane = 1;
     private Vector3 verticalTargetPosition;
     private bool isJumping = false;
@@ -25,34 +28,24 @@ public class Player : MonoBehaviour
     private bool isBowing = false;
     private float bowStart;
     private Vector3 boxColliderSize;
-    private bool touching = false;
-    private Vector2 startingTouch;
-    private int coins;
-    private int totalCoins;
     private float points;
     private float bestScore;
 
-    private static readonly string RunStartAnim = "runStart";
+#if !UNITY_EDITOR && UNITY_ANDROID
+    private bool touching = false;
+    private Vector2 startingTouch;
+#endif
+
     private static readonly string JumpingAnim = "Jumping";
-    private static readonly string JumpSpeedAnim = "JumpSpeed";
     private static readonly string SlidingAnim = "Sliding";
     private static readonly string DeadAnim = "Dead";
 
     private void Start()
     {
         boxColliderSize = boxCollider.size;
-        anim.Play(RunStartAnim);
         velocity = minVelocity;
 
-        if (PlayerPrefs.GetInt(Constants.EarnedCoinsPref) <= 0)
-            PlayerPrefs.SetInt(Constants.EarnedCoinsPref, 0);
-        if (PlayerPrefs.GetFloat(Constants.ScorePref) <= 0)
-            PlayerPrefs.SetFloat(Constants.ScorePref, 0);
-
-        if (SceneManager.GetActiveScene().name == Constants.Level1Scene)
-            PlayerPrefs.SetInt(Constants.CoinsCurrentRunPref, 0);
-        else
-            uIManager.UpdateCoins();
+        uIManager.UpdateCoins(Coins);
     }
 
     private void Update()
@@ -61,25 +54,8 @@ public class Player : MonoBehaviour
         bestScore = points;
         uIManager.UpdatePoints((int)points);
 
-        //Inputs para computador
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            ChangeLane(-1);
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            ChangeLane(1);
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            Jump();
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            GetDown();
-        }
-
-        if(Input.touchCount == 1)
+#if !UNITY_EDITOR && UNITY_ANDROID
+        if (Input.touchCount == 1)
         {
             if(touching)
             {
@@ -116,7 +92,24 @@ public class Player : MonoBehaviour
                 touching = false;
             }
         }
-
+#else
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            ChangeLane(-1);
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            ChangeLane(1);
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            Jump();
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            GetDown();
+        }
+#endif
         if (isJumping)
         {
             float razao = (transform.position.z - jumpStart) / jumpDistance;
@@ -146,7 +139,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        Vector3 alvoPosicao = new Vector3(verticalTargetPosition.x, verticalTargetPosition.y, transform.position.z);
+        Vector3 alvoPosicao = new(verticalTargetPosition.x, verticalTargetPosition.y, transform.position.z);
         transform.position = Vector3.MoveTowards(transform.position, alvoPosicao, laneVelocity * Time.deltaTime);
     }
 
@@ -159,10 +152,9 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag(Constants.CoinTag))
         {
-            coins = PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref) + 1;
-            other.transform.parent.gameObject.SetActive(false);
-            PlayerPrefs.SetInt(Constants.CoinsCurrentRunPref, coins);
-            uIManager.UpdateCoins();
+            Coins++;
+            other.gameObject.SetActive(false);
+            uIManager.UpdateCoins(Coins);
         }
         else if (other.CompareTag(Constants.ObstaclesTag))
         {
@@ -171,29 +163,9 @@ public class Player : MonoBehaviour
             uIManager.gameOver.SetActive(true);
             Invoke(nameof(CallMenu), 5f);
 
-            totalCoins = PlayerPrefs.GetInt(Constants.EarnedCoinsPref) + coins;
-            PlayerPrefs.SetInt(Constants.EarnedCoinsPref, totalCoins);
+            playerSO.TotalNumberOfCoins += Coins;
 
-            if (bestScore > PlayerPrefs.GetFloat(Constants.ScorePref))
-                PlayerPrefs.SetFloat(Constants.ScorePref, bestScore);
-        }
-        else if (other.CompareTag(Constants.FinishTag))
-        {
-            switch (SceneManager.GetActiveScene().name)
-            {
-                case "Level1":
-                    if (PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref) >= 50)
-                        RepeatOrNo.Instance.RepeatNo();
-                    else
-                        RepeatOrNo.Instance.RepeatYes();
-                    break;
-                case "Level2":
-                    if (PlayerPrefs.GetInt(Constants.CoinsCurrentRunPref) >= 120)
-                        RepeatOrNo.Instance.RepeatNo();
-                    else
-                        RepeatOrNo.Instance.RepeatYes();
-                    break;
-            }
+            if (bestScore > playerSO.BestScore) playerSO.BestScore = (int)bestScore;
         }
     }
 
@@ -213,7 +185,6 @@ public class Player : MonoBehaviour
         if(!isJumping)
         {
             jumpStart = transform.position.z;
-            anim.SetFloat(JumpSpeedAnim, velocity / jumpDistance);
             anim.SetBool(JumpingAnim, true);
             isJumping = true;
         }
@@ -224,7 +195,6 @@ public class Player : MonoBehaviour
         if(!isJumping && !isBowing)
         {
             bowStart = transform.position.z;
-            anim.SetFloat(JumpSpeedAnim, velocity / lowerDistance);
             anim.SetBool(SlidingAnim, true);
             Vector3 newSize = boxCollider.size;
             newSize.y /= 2;
@@ -235,7 +205,7 @@ public class Player : MonoBehaviour
 
     private void CallMenu()
     {
-        SceneManager.LoadScene(Constants.MenuScene);
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void IncreaseSpeed()

@@ -3,10 +3,9 @@ using TMPro;
 
 public class PlayerValues : MonoBehaviour
 {
+    [SerializeField] private PlayerSO playerSO;
     [SerializeField] private TextMeshProUGUI coinsText;
     [SerializeField] private TextMeshProUGUI pointsText;
-
-    private int points;
 
     private void Start()
     {
@@ -16,12 +15,11 @@ public class PlayerValues : MonoBehaviour
 
     private void GetScore()
     {
-        points = (int)PlayerPrefs.GetFloat(Constants.ScorePref);
-        pointsText.text = points.ToString();
+        pointsText.text = playerSO.BestScore.ToString();
     }
 
     private void GetCoins()
     {
-        coinsText.text = PlayerPrefs.GetInt(Constants.EarnedCoinsPref).ToString();
+        coinsText.text = playerSO.TotalNumberOfCoins.ToString();
     }
 }
