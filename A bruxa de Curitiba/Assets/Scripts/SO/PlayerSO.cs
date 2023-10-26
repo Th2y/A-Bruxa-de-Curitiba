@@ -20,6 +20,9 @@ public class PlayerSO : ScriptableObject
     [Space(10), Header("Score")]
     public int BestScore = 0;
 
+    [Space(10), Header("Missions")]
+    public MissionSO[] Missions;
+
     [Space(10), Header("Difficulty")]
     public string ActualDifficulty = "Easy";
     public DifficultySO[] Difficulties;

@@ -13,7 +13,7 @@ public class Track : MonoBehaviour
 
     private readonly List<GameObject> _newCoins = new();
 
-    public void Start()
+    public void Awake()
     {
         isInfinityMode = ActualMode.Instance.IsInfinityMode;
 
@@ -33,11 +33,22 @@ public class Track : MonoBehaviour
 
     private void PlaceObstacles()
     {
-        float percent = playerSO.DifficultiesDict[playerSO.ActualDifficulty].PercentOfObstaclesToShow;
+        int obstaclesLength = obstacles.Length;
+        int percentToDisable = 
+            (int)(obstaclesLength * (playerSO.DifficultiesDict[playerSO.ActualDifficulty].PercentOfObstaclesToShow / 100f));
 
-        foreach (GameObject obstacle in obstacles)
+        for (int i = 0; i < percentToDisable; i++)
         {
-            obstacle.SetActive(Random.Range(0f, 1f) <= percent);
+            int indiceAleatorio = Random.Range(0, obstaclesLength);
+
+            if (obstacles[indiceAleatorio].activeSelf)
+            {
+                obstacles[indiceAleatorio].SetActive(false);
+            }
+            else
+            {
+                i--;
+            }
         }
     }
 
@@ -62,16 +73,24 @@ public class Track : MonoBehaviour
         {
             Player player = other.GetComponent<Player>();
 
-            if (isInfinityMode || player.Coins < difficulty.NumberOfCoinsToWin)
+            if (isInfinityMode)
             {
                 player.IncreaseSpeed();
                 transform.position = new Vector3(0, 0, transform.position.z + 297 * 2);
                 PlaceObstacles();
                 PlaceCoins();
             }
-            else 
+            else if (LevelGenerator.Instance.IsLevelFinish())
             {
                 RepeatOrNo.Instance.RepeatNo();
+            }
+            else 
+            {
+                LevelGenerator.Instance.ChangeTheme();
+                player.IncreaseSpeed();
+                transform.position = new Vector3(0, 0, transform.position.z + 297 * 2);
+                PlaceObstacles();
+                PlaceCoins();
             }
         }
     }

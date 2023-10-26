@@ -19,7 +19,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float lowerDistance = 10f;
 
+    public bool RewardsReceived = false;
     public int Coins { get; private set; }
+    public float BestScore { get; private set; }
 
     private int actualLane = 1;
     private Vector3 verticalTargetPosition;
@@ -29,7 +31,6 @@ public class Player : MonoBehaviour
     private float bowStart;
     private Vector3 boxColliderSize;
     private float points;
-    private float bestScore;
 
 #if !UNITY_EDITOR && UNITY_ANDROID
     private bool touching = false;
@@ -42,6 +43,21 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        if (ActualMode.Instance.IsInfinityMode || ActualMode.Instance.ActualLevel == 1)
+        {
+            ActualMode.Instance.ActualCoins = 0;
+            ActualMode.Instance.ActualPoints = 0;
+            Coins = 0;
+            points = 0;
+        }
+        else
+        {
+            Coins = ActualMode.Instance.ActualCoins;
+            points = ActualMode.Instance.ActualPoints;
+        }
+
+        RewardsReceived = false;
+
         boxColliderSize = boxCollider.size;
         velocity = minVelocity;
 
@@ -51,7 +67,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         points += Time.deltaTime * velocity;
-        bestScore = points;
+        BestScore = points;
         uIManager.UpdatePoints((int)points);
 
 #if !UNITY_EDITOR && UNITY_ANDROID
@@ -158,14 +174,13 @@ public class Player : MonoBehaviour
         }
         else if (other.CompareTag(Constants.ObstaclesTag))
         {
+            ActualMode.Instance.ActualCoins = Coins;
+            ActualMode.Instance.ActualPoints = (int)BestScore;
+
             velocity = 0;
             anim.SetBool(DeadAnim, true);
             uIManager.gameOver.SetActive(true);
             Invoke(nameof(CallMenu), 5f);
-
-            playerSO.TotalNumberOfCoins += Coins;
-
-            if (bestScore > playerSO.BestScore) playerSO.BestScore = (int)bestScore;
         }
     }
 

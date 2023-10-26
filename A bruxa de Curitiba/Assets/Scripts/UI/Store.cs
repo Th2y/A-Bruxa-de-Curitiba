@@ -40,6 +40,7 @@ public class Store : MonoBehaviour
             playerSO.Skins[skinName].Purchased = true;
             UpdateCoinsValue();
             ShowSkin();
+            CompleteMission("BuySomething");
         }
     }
     #endregion
@@ -61,13 +62,36 @@ public class Store : MonoBehaviour
             playerSO.TotalNumberOfCoins -= playerSO.DifficultiesDict[difficultyName].Value;
             playerSO.DifficultiesDict[difficultyName].Purchased = true;
             UpdateCoinsValue();
-            ShowSkin();
+            ShowDifficulty();
+            CompleteMission("BuySomething");
         }
     }
     #endregion
 
+    private void CompleteMission(string missionName)
+    {
+        foreach (MissionSO missionSO in playerSO.Missions)
+        {
+            if (missionSO.Name == missionName)
+            {
+                missionSO.Completed = true;
+                break;
+            }
+        }
+    }
+
     private void UpdateCoinsValue()
     {
         actualCoinsText.text = playerSO.TotalNumberOfCoins.ToString();
+
+        if(playerSO.TotalNumberOfCoins >= 100)
+        {
+            CompleteMission("Collect100Coins");
+        }
+        
+        if(playerSO.TotalNumberOfCoins >= 500)
+        {
+            CompleteMission("Collect500Coins");
+        }
     }
 }

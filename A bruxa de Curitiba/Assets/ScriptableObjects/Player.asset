@@ -16,6 +16,17 @@ MonoBehaviour:
   AneOld: {fileID: 11400000, guid: 9e18c708110cddb4ea0e108d7ea82bc1, type: 2}
   ActualSkin: Young
   TotalNumberOfCoins: 0
+  BestScore: 0
+  Missions:
+  - {fileID: 11400000, guid: 9fc751aa4a39b01418bb3fdf9517c4d4, type: 2}
+  - {fileID: 11400000, guid: 40e5cd1d133f9e34b8f2f0d557937b87, type: 2}
+  - {fileID: 11400000, guid: 8c2f8c8716ea0764e992624482da9e10, type: 2}
+  - {fileID: 11400000, guid: fdb21f548cf2b9b488aeee6685c8c27e, type: 2}
+  - {fileID: 11400000, guid: bd04cf9853a00104598bb96937fc3d6f, type: 2}
+  - {fileID: 11400000, guid: 5abf7409ac676264eaa03d656dfe9dff, type: 2}
+  - {fileID: 11400000, guid: dfb49722ebd3c7245acde060fc1d8c66, type: 2}
+  - {fileID: 11400000, guid: 1282c5aabeb0ec343a43a226dea5094a, type: 2}
+  - {fileID: 11400000, guid: e9b4c45b44947ef42b920f57bb0cd734, type: 2}
   ActualDifficulty: Easy
   Difficulties:
   - {fileID: 11400000, guid: 5aee0660100a5d34c99af9a0f720de84, type: 2}

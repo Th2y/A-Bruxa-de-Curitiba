@@ -8,6 +8,5 @@ public class DifficultySO : ScriptableObject
     public int Value;
     public int NumberOfCoinsToWin = 50;
     public Vector2 NumberOfCoinsToShow;
-    [Tooltip("Put in decimal values. Ex: 0.5")]
-    public float PercentOfObstaclesToShow;
+    public int PercentOfObstaclesToShow;
 }
